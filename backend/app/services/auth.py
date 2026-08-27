@@ -19,7 +19,23 @@ log = logging.getLogger("aisa.auth")
 
 _bearer = HTTPBearer(auto_error=False)
 
+#: Cookie name used as a fallback token channel (set by the frontend).
+TOKEN_COOKIE = "aisa_token"
+
 _firebase_auth = None
+
+
+def _extract_token(request: Request, creds: HTTPAuthorizationCredentials | None) -> str:
+    """Return the presented JWT from whichever channel survived the network.
+
+    The standard ``Authorization: Bearer`` header is preferred, but some
+    preview/proxy layers silently drop it. The frontend therefore also sends
+    the token as an ``X-Api-Token`` header and in the ``aisa_token`` cookie,
+    and any of the three is accepted here.
+    """
+    if creds and creds.credentials:
+        return creds.credentials
+    return request.headers.get("x-api-token") or request.cookies.get(TOKEN_COOKIE) or ""
 
 
 def _get_firebase_auth():
@@ -98,9 +114,12 @@ def get_current_user(
     creds: HTTPAuthorizationCredentials | None = Depends(_bearer),
     db: Session = Depends(get_db),
 ) -> models.User:
-    token = creds.credentials if creds else ""
-    if creds is None:
-        raise _reject("Not authenticated (no Authorization header).", token)
+    token = _extract_token(request, creds)
+    if not token:
+        raise _reject(
+            "No token found (checked Authorization header, X-Api-Token header, "
+            f"and {TOKEN_COOKIE} cookie)."
+        )
     try:
         payload = decode_access_token(token)
         user = db.get(models.User, int(payload.get("sub", "0")))

@@ -8,11 +8,21 @@ const AuthCtx = createContext(null);
 // clean React state with the token already in localStorage — no in-flight
 // requests from the previous session can race with the new one.
 async function bootFreshSession(user) {
-  const me = await api("/auth/me", { silent401: true }).catch(() => null);
+  let reason = "unknown error";
+  const me = await api("/auth/me", { silent401: true }).catch((e) => {
+    reason = e && e.message ? e.message : String(e);
+    return null;
+  });
   if (!me) {
+    const token = getToken() || "";
     clearSession();
+    // Include the server's exact rejection reason (it now says precisely
+    // which token channel was missing/invalid) so the next failure is
+    // diagnosable without digging through server logs.
     throw new Error(
-      "Signed in, but the server immediately rejected the session. Try again — if it keeps happening, clear this site's data and reload."
+      `Signed in, but the server rejected the session: ${reason}. ` +
+        `Token starts "${token.slice(0, 20)}…". Try again — if it keeps happening, ` +
+        "open this app in a fresh tab and sign in again."
     );
   }
   window.location.href = "/";

@@ -10,19 +10,31 @@ export const getStoredUser = () => {
     return null;
   }
 };
+// Some preview/proxy layers drop the Authorization header in transit, so the
+// token also travels as an X-Api-Token header and a SameSite=Lax cookie; the
+// backend accepts whichever channel arrives. (Cookie is not HttpOnly — the
+// SPA manages it; SameSite=Lax keeps it out of cross-site requests.)
+const TOKEN_COOKIE = "aisa_token";
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days, matches JWT expiry
+
 export const setSession = (token, user) => {
   localStorage.setItem(TOKEN_KEY, token);
   localStorage.setItem(USER_KEY, JSON.stringify(user));
+  document.cookie = `${TOKEN_COOKIE}=${token}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`;
 };
 export const clearSession = () => {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
+  document.cookie = `${TOKEN_COOKIE}=; path=/; max-age=0; samesite=lax`;
 };
 
 export async function api(path, { method = "GET", body, silent401 = false } = {}) {
   const headers = {};
   const token = getToken();
-  if (token) headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+    headers["X-Api-Token"] = token; // fallback channel (see setSession note)
+  }
 
   let payload;
   if (body !== undefined) {

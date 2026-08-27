@@ -133,6 +133,16 @@ Brings up Postgres 16 + FastAPI + React dev server; the backend uses
 
 Create a `backend/.env` file with any of the above (it is git-ignored).
 
+### Token transport
+
+The frontend stores the JWT in `localStorage` and sends it as
+`Authorization: Bearer …`. Because some preview/proxy layers silently drop the
+`Authorization` header, the token is **also** sent as an `X-Api-Token` header
+and in a `SameSite=Lax` `aisa_token` cookie; the backend accepts whichever
+channel arrives (`services/auth.py:_extract_token`). After login the app
+verifies the fresh token with `GET /api/auth/me` and hard-reloads on success —
+the error surfaced to the user includes the server's exact rejection reason.
+
 ### AI engine behaviour
 
 * **No keys (default):** the deterministic **local engine** powers everything —
