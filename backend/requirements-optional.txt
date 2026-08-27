@@ -1,0 +1,5 @@
+# Optional: enable Firebase authentication (service-account based token verification)
+firebase-admin>=6.4
+
+# Optional: PostgreSQL driver (used when DATABASE_URL points at postgres)
+psycopg2-binary>=2.9

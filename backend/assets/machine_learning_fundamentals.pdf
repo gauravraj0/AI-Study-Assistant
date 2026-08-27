@@ -1,0 +1,177 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 3 0 R >> >> >>
+endobj
+5 0 obj
+<< /Length 1927 >>
+stream
+BT
+/F1 11 Tf
+14 TL
+72 756 Td
+(Machine Learning Fundamentals) Tj
+T*
+() Tj
+T*
+(1. What is Machine Learning) Tj
+T*
+(Machine learning is a branch of artificial intelligence that lets systems) Tj
+T*
+(learn patterns from data instead of following explicit rules. A machine learning) Tj
+T*
+(model is a mathematical function trained on examples to make predictions.) Tj
+T*
+(The quality of the predictions depends on both the algorithm and the data used) Tj
+T*
+(for training. Machine learning powers applications such as recommendation) Tj
+T*
+(systems, spam filters, medical diagnosis, and language translation.) Tj
+T*
+() Tj
+T*
+(2. Types of Machine Learning) Tj
+T*
+(Supervised learning uses labeled data, where each example has a known answer.) Tj
+T*
+(Regression predicts a continuous value such as a house price, while) Tj
+T*
+(classification predicts a category such as spam or not spam. Unsupervised) Tj
+T*
+(learning finds hidden structure in unlabeled data, for example grouping similar) Tj
+T*
+(customers using clustering. Reinforcement learning trains an agent to take) Tj
+T*
+(actions in an environment to maximize a cumulative reward signal.) Tj
+T*
+(Semi-supervised learning combines a small amount of labeled data with a) Tj
+T*
+(large amount of unlabeled data to improve accuracy at lower labeling cost.) Tj
+T*
+() Tj
+T*
+(3. The Training Process) Tj
+T*
+(Training a model means adjusting its parameters so that its predictions) Tj
+T*
+(match the known answers as closely as possible. The difference between the) Tj
+T*
+(prediction and the true answer is measured by a loss function. Gradient) Tj
+T*
+(descent is an optimization algorithm that repeatedly updates the parameters in) Tj
+T*
+(the direction that reduces the loss. The learning rate controls how large each) Tj
+T*
+(update step is; a learning rate that is too high causes the loss to diverge,) Tj
+T*
+(while a learning rate that is too low makes training extremely slow.) Tj
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 7 0 R /Resources << /Font << /F1 3 0 R >> >> >>
+endobj
+7 0 obj
+<< /Length 2563 >>
+stream
+BT
+/F1 11 Tf
+14 TL
+72 756 Td
+(4. Overfitting and Underfitting) Tj
+T*
+(Overfitting happens when a model memorizes the training data, including its) Tj
+T*
+(noise, and performs poorly on new unseen data. Underfitting happens when the) Tj
+T*
+(model is too simple to capture the underlying pattern. The bias-variance) Tj
+T*
+(tradeoff describes the tension between model simplicity and flexibility.) Tj
+T*
+(Techniques to reduce overfitting include regularization, dropout, early) Tj
+T*
+(stopping, and collecting more training data. Cross-validation splits the data) Tj
+T*
+(into folds to give a more reliable estimate of generalization performance.) Tj
+T*
+() Tj
+T*
+(5. Evaluating Models) Tj
+T*
+(Accuracy is the fraction of correct predictions, but it can be misleading on) Tj
+T*
+(imbalanced datasets. Precision measures how many of the predicted positives) Tj
+T*
+(are actually correct, while recall measures how many of the real positives the) Tj
+T*
+(model found. The F1 score is the harmonic mean of precision and recall. For) Tj
+T*
+(regression tasks, mean squared error penalizes large errors more heavily) Tj
+T*
+(than mean absolute error does. Confusion matrices summarize true positives,) Tj
+T*
+(true negatives, false positives, and false negatives for classification models.) Tj
+T*
+() Tj
+T*
+(6. Neural Networks) Tj
+T*
+(A neural network is a model inspired by the structure of the brain. It consists) Tj
+T*
+(of layers of neurons, where each neuron computes a weighted sum of its inputs) Tj
+T*
+(and passes the result through an activation function. Hidden layers between the) Tj
+T*
+(input and output allow the network to learn increasingly abstract features.) Tj
+T*
+(Backpropagation is the algorithm that computes how much each weight contributed) Tj
+T*
+(to the loss, so the weights can be updated with gradient descent. Deep learning) Tj
+T*
+(is the subfield that studies neural networks with many hidden layers.) Tj
+T*
+(Convolutional neural networks are especially effective for image tasks, while) Tj
+T*
+(transformer architectures with attention mechanisms dominate modern language) Tj
+T*
+(models such as large language models.) Tj
+T*
+() Tj
+T*
+(7. Practical Advice for Students) Tj
+T*
+(Start with a simple baseline model before using complex architectures. Always) Tj
+T*
+(reserve a held-out test set that the model never sees during training. Log) Tj
+T*
+(hyperparameters and results so experiments can be compared fairly. Understanding) Tj
+T*
+(why a model fails is often more valuable than a single high score, because it) Tj
+T*
+(guides the next improvement.) Tj
+ET
+endstream
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000191 00000 n 
+0000000317 00000 n 
+0000002296 00000 n 
+0000002422 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+5037
+%%EOF
