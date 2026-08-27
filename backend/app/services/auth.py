@@ -4,6 +4,8 @@ The Firebase path activates when ``FIREBASE_SERVICE_ACCOUNT_FILE`` points at a
 service-account JSON (and the optional ``firebase-admin`` package is installed).
 """
 
+import logging
+
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
@@ -12,6 +14,8 @@ from .. import models
 from ..config import settings
 from ..database import get_db
 from ..security import create_access_token, decode_access_token, hash_password, verify_password
+
+log = logging.getLogger("aisa.auth")
 
 _bearer = HTTPBearer(auto_error=False)
 
@@ -83,23 +87,34 @@ def issue_token(user: models.User) -> dict:
     return {"access_token": create_access_token(user.id, user.email), "token_type": "bearer", "user": user}
 
 
+def _reject(reason: str, token: str = "") -> HTTPException:
+    # Diagnostic logging: tells us exactly *why* a browser request 401'd.
+    log.warning("auth rejected: %s (token prefix %r)", reason, (token or "")[:25])
+    return HTTPException(status_code=401, detail=reason, headers={"WWW-Authenticate": "Bearer"})
+
+
 def get_current_user(
     request: Request,
     creds: HTTPAuthorizationCredentials | None = Depends(_bearer),
     db: Session = Depends(get_db),
 ) -> models.User:
+    token = creds.credentials if creds else ""
     if creds is None:
-        raise HTTPException(status_code=401, detail="Not authenticated.", headers={"WWW-Authenticate": "Bearer"})
+        raise _reject("Not authenticated (no Authorization header).", token)
     try:
-        payload = decode_access_token(creds.credentials)
+        payload = decode_access_token(token)
         user = db.get(models.User, int(payload.get("sub", "0")))
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid or expired token.")
+    except Exception as e:  # noqa: BLE001
+        raise _reject(f"Invalid or expired token ({type(e).__name__}).", token)
     if user is None:
-        raise HTTPException(status_code=401, detail="User no longer exists.")
+        raise _reject("User no longer exists (token refers to a deleted account).", token)
     # Defense in depth: numeric ids can be recycled after a user is deleted;
     # the email binding prevents a stale token from authenticating as a
     # different (later) user that reuses the same id.
     if payload.get("email") and payload["email"] != user.email:
-        raise HTTPException(status_code=401, detail="Token does not match this account.")
+        raise _reject(
+            f"Token does not match this account (token email {payload.get('email')!r} != "
+            f"user email {user.email!r}).",
+            token,
+        )
     return user

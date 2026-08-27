@@ -19,7 +19,7 @@ export const clearSession = () => {
   localStorage.removeItem(USER_KEY);
 };
 
-export async function api(path, { method = "GET", body } = {}) {
+export async function api(path, { method = "GET", body, silent401 = false } = {}) {
   const headers = {};
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
@@ -35,7 +35,7 @@ export async function api(path, { method = "GET", body } = {}) {
   }
 
   const res = await fetch(`/api${path}`, { method, headers, body: payload });
-  if (res.status === 401 && !path.startsWith("/auth/login")) {
+  if (res.status === 401 && !path.startsWith("/auth/login") && !silent401) {
     // Only invalidate the session if the token used by this request is still
     // the active one — otherwise a stale in-flight 401 (e.g. an /auth/me
     // check with an old token) would wipe out a brand-new login.
